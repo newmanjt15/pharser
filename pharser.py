@@ -7,12 +7,24 @@ from cdfer import makeGraphs as msg
 from urllib.parse import urlparse
 from datetime import datetime
 
+##******************************
+#
+#   |to_print| and the |csv_print| work together to determine whether or not we should print 
+#   csv info based on what is passed to |parse_har_file| 
+#
+#
+##*****************************
 to_print = False
-
 def csv_print(string):
     if to_print:
         print(string)
 
+##******************************
+#
+#   |parse_perf_file| parses what data from capturing a json from Page.getMetrics
+#
+#
+##*****************************
 def parse_perf_file(perf_file):
     perf_info_data = {}
     with open(perf_file, 'r') as f:
@@ -25,6 +37,12 @@ def parse_perf_file(perf_file):
             print(e)
     return perf_info_data
 
+##******************************
+#
+#   read a har file, will add networks if added in to the code
+#
+#
+##*****************************
 def read_har_file(har_file):
     reqs = dd(list)
     with open(har_file, 'r') as f:
@@ -41,7 +59,13 @@ def read_har_file(har_file):
             reqs[entry['serverIPAddress']].append(entry)            
     return reqs
 
-def print_har_file(har):
+##******************************
+#
+#   prints a har file, specialized for result test 
+#
+#
+##*****************************
+def print_har_file(har, csv=False):
     urls = []
     domains = []
     urls_per_domain = dd(int)
@@ -94,6 +118,15 @@ def print_har_file(har):
         ol = 0.0
     return len(urls), len(urls_per_domain), ratio, time_spread, ol,  urls_per_domain, byte_spread
 
+##******************************
+#
+#   parses a results directory and searches for .har files to parse
+#   returns |h1_data| and |h2_data| which contain the web requests of har
+#   files in the directory. 
+#       
+#
+#
+##*****************************
 def parse_results_dir(results_dir, test_network):
     h1_data = {}
     h2_data = {}
